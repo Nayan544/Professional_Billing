@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5>Customer Details</h5>
+        <div>
+            <a href="{% url 'customer-update' customer.pk %}" class="btn btn-warning">Edit</a>
+            <a href="{% url 'customer-list' %}" class="btn btn-secondary">Back to List</a>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-6">
+                <table class="table table-bordered">
+                    <tr>
+                        <th>Name</th>
+                        <td>{{ customer.name }}</td>
+                    </tr>
+                    <tr>
+                        <th>Email</th>
+                        <td>{{ customer.email|default:"-" }}</td>
+                    </tr>
+                    <tr>
+                        <th>Phone</th>
+                        <td>{{ customer.phone|default:"-" }}</td>
+                    </tr>
+                    <tr>
+                        <th>GSTIN</th>
+                        <td>{{ customer.gstin|default:"-" }}</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="col-md-6">
+                <h6>Address:</h6>
+                <p>{{ customer.address|default:"No address provided"|linebreaks }}</p>
+                
+                <h6 class="mt-4">Created:</h6>
+                <p>{{ customer.created_at }}</p>
+                
+                <h6>Last Updated:</h6>
+                <p>{{ customer.updated_at }}</p>
+            </div>
+        </div>
+
+        <div class="mt-4">
+            <h5>Recent Invoices</h5>
+            {% if customer.invoice_set.all %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Invoice #</th>
+                                <th>Date</th>
+                                <th>Total</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for invoice in customer.invoice_set.all|slice:":5" %}
+                            <tr>
+                                <td>{{ invoice.invoice_number }}</td>
+                                <td>{{ invoice.date }}</td>
+                                <td>{{ invoice.total_amount }}</td>
+                                <td>
+                                    {% if invoice.payment_status %}
+                                        <span class="badge bg-success">Paid</span>
+                                    {% else %}
+                                        <span class="badge bg-warning">Pending</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <a href="{% url 'invoice-detail' invoice.pk %}" class="btn btn-sm btn-info">View</a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <a href="{% url 'invoice-create' %}?customer={{ customer.pk }}" class="btn btn-primary mt-2">
+                    Create New Invoice for This Customer
+                </a>
+            {% else %}
+                <div class="alert alert-info">No invoices found for this customer</div>
+                <a href="{% url 'invoice-create' %}?customer={{ customer.pk }}" class="btn btn-primary">
+                    Create First Invoice
+                </a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

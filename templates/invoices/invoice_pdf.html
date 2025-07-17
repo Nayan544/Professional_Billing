@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Invoice #{{ invoice.invoice_number }}</title>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; }
+        .container { width: 80%; margin: 0 auto; }
+        .header { text-align: center; margin-bottom: 20px; }
+        .from-to { display: flex; justify-content: space-between; margin-bottom: 30px; }
+        .table { width: 100%; border-collapse: collapse; margin-bottom: 30px; }
+        .table th, .table td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        .table th { background-color: #f2f2f2; }
+        .text-right { text-align: right; }
+        .footer { margin-top: 50px; }
+        .signature { margin-top: 50px; border-top: 1px dashed #000; width: 200px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>INVOICE</h1>
+            <h3>#{{ invoice.invoice_number }}</h3>
+        </div>
+        
+        <div class="from-to">
+            <div class="from">
+                <h3>From:</h3>
+                <p>DelmaS IT Solutions<br>
+                swastik Crose Rode<br>
+                Ahamdabad, gujarat-380009<br>
+                GSTIN: 22AAAAA0000A1Z5</p>
+            </div>
+            
+            <div class="to">
+                <h3>To:</h3>
+                <p>{{ invoice.customer.name }}<br>
+                {{ invoice.customer.address }}<br>
+                Phone: {{ invoice.customer.phone }}<br>
+                {% if invoice.customer.gstin %}GSTIN: {{ invoice.customer.gstin }}{% endif %}</p>
+            </div>
+        </div>
+        
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Description</th>
+                    <th>Quantity</th>
+                    <th>Unit Price</th>
+                    <th>Tax %</th>
+                    <th>Discount %</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in invoice.items.all %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ item.product.name }}</td>
+                    <td>{{ item.quantity }}</td>
+                    <td>{{ item.unit_price }}</td>
+                    <td>{{ item.tax_percentage }}</td>
+                    <td>{{ item.discount_percentage }}</td>
+                    <td>{{ item.total }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="6" class="text-right"><strong>Subtotal:</strong></td>
+                    <td>{{ invoice.subtotal }}</td>
+                </tr>
+                <tr>
+                    <td colspan="6" class="text-right"><strong>Tax Amount:</strong></td>
+                    <td>{{ invoice.tax_amount }}</td>
+                </tr>
+                <tr>
+                    <td colspan="6" class="text-right"><strong>Discount Amount:</strong></td>
+                    <td>{{ invoice.discount_amount }}</td>
+                </tr>
+                <tr>
+                    <td colspan="6" class="text-right"><strong>Total Amount:</strong></td>
+                    <td>{{ invoice.total_amount }}</td>
+                </tr>
+                <tr>
+                    <td colspan="6" class="text-right"><strong>Paid Amount:</strong></td>
+                    <td>{{ invoice.paid_amount }}</td>
+                </tr>
+                <tr>
+                    <td colspan="6" class="text-right"><strong>Balance:</strong></td>
+                    <td>{{ invoice.balance }}</td>
+                </tr>
+            </tfoot>
+        </table>
+        
+        <div class="payment-info">
+            <p><strong>Payment Method:</strong> {{ invoice.get_payment_method_display }}</p>
+            <p><strong>Invoice Date:</strong> {{ invoice.date }}</p>
+            <p><strong>Due Date:</strong> {{ invoice.due_date }}</p>
+            {% if invoice.notes %}<p><strong>Notes:</strong> {{ invoice.notes }}</p>{% endif %}
+        </div>
+        
+        <div class="footer">
+            <p>Thank you for your business!</p>
+            <div class="signature"></div>
+            <p>Authorized Signature</p>
+        </div>
+    </div>
+</body>
+</html>

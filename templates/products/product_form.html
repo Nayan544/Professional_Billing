@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h5>{% if object %}Edit{% else %}Add{% endif %} Product</h5>
+    </div>
+    <div class="card-body">
+        <form method="post">
+            {% csrf_token %}
+            
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label for="{{ form.name.id_for_label }}" class="form-label">Product Name</label>
+                    {% render_field form.name class="form-control" %}
+                    {% for error in form.name.errors %}
+                        <div class="invalid-feedback d-block">{{ error }}</div>
+                    {% endfor %}
+                </div>
+                <div class="col-md-6">
+                    <label for="{{ form.price.id_for_label }}" class="form-label">Price</label>
+                    <div class="input-group">
+                        <span class="input-group-text">₹</span>
+                        {% render_field form.price class="form-control" %}
+                    </div>
+                    {% for error in form.price.errors %}
+                        <div class="invalid-feedback d-block">{{ error }}</div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <label for="{{ form.tax_percentage.id_for_label }}" class="form-label">Tax Percentage</label>
+                    <div class="input-group">
+                        {% render_field form.tax_percentage class="form-control" %}
+                        <span class="input-group-text">%</span>
+                    </div>
+                    {% for error in form.tax_percentage.errors %}
+                        <div class="invalid-feedback d-block">{{ error }}</div>
+                    {% endfor %}
+                </div>
+                <div class="col-md-4">
+                    <label for="{{ form.discount.id_for_label }}" class="form-label">Discount</label>
+                    <div class="input-group">
+                        {% render_field form.discount class="form-control" %}
+                        <span class="input-group-text">%</span>
+                    </div>
+                    {% for error in form.discount.errors %}
+                        <div class="invalid-feedback d-block">{{ error }}</div>
+                    {% endfor %}
+                </div>
+                <div class="col-md-4">
+                    <label for="{{ form.stock.id_for_label }}" class="form-label">Stock</label>
+                    {% render_field form.stock class="form-control" %}
+                    {% for error in form.stock.errors %}
+                        <div class="invalid-feedback d-block">{{ error }}</div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label for="{{ form.description.id_for_label }}" class="form-label">Description</label>
+                {% render_field form.description class="form-control" rows="3" %}
+                {% for error in form.description.errors %}
+                    <div class="invalid-feedback d-block">{{ error }}</div>
+                {% endfor %}
+            </div>
+
+            <div class="mb-3">
+                <label for="{{ form.hsn_code.id_for_label }}" class="form-label">HSN Code</label>
+                {% render_field form.hsn_code class="form-control" %}
+                {% for error in form.hsn_code.errors %}
+                    <div class="invalid-feedback d-block">{{ error }}</div>
+                {% endfor %}
+            </div>
+
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                <button type="submit" class="btn btn-primary">Save</button>
+                <a href="{% url 'product-list' %}" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5>Invoice #{{ invoice.invoice_number }}</h5>
+        <div>
+            <a href="{% url 'generate-pdf' invoice.pk %}" class="btn btn-sm btn-primary">Download PDF</a>
+            <a href="{% url 'invoice-list' %}" class="btn btn-sm btn-secondary">Back to List</a>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <h6>From:</h6>
+                <p>DelmaS IT Solutions<br>
+                swastik Crose Rode<br>
+                Ahamdabad, gujarat-380009<br>
+                GSTIN: 22AAAAA0000A1Z5</p>
+            </div>
+            <div class="col-md-6 text-end">
+                <h6>To:</h6>
+                <p>{{ invoice.customer.name }}<br>
+                {{ invoice.customer.address }}<br>
+                Phone: {{ invoice.customer.phone }}<br>
+                {% if invoice.customer.gstin %}GSTIN: {{ invoice.customer.gstin }}{% endif %}</p>
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Product</th>
+                        <th>Quantity</th>
+                        <th>Unit Price</th>
+                        <th>Tax %</th>
+                        <th>Discount %</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in invoice.items.all %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ item.product.name }}</td>
+                        <td>{{ item.quantity }}</td>
+                        <td>{{ item.unit_price }}</td>
+                        <td>{{ item.tax_percentage }}</td>
+                        <td>{{ item.discount_percentage }}</td>
+                        <td>{{ item.total }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="6" class="text-end"><strong>Subtotal:</strong></td>
+                        <td>{{ invoice.subtotal }}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="6" class="text-end"><strong>Tax Amount:</strong></td>
+                        <td>{{ invoice.tax_amount }}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="6" class="text-end"><strong>Discount Amount:</strong></td>
+                        <td>{{ invoice.discount_amount }}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="6" class="text-end"><strong>Total Amount:</strong></td>
+                        <td>{{ invoice.total_amount }}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="6" class="text-end"><strong>Paid Amount:</strong></td>
+                        <td>{{ invoice.paid_amount }}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="6" class="text-end"><strong>Balance:</strong></td>
+                        <td>{{ invoice.balance }}</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col-md-6">
+                <h6>Payment Method:</h6>
+                <p>{{ invoice.get_payment_method_display }}</p>
+                
+                <h6>Notes:</h6>
+                <p>{{ invoice.notes|default:"No notes" }}</p>
+            </div>
+            <div class="col-md-6 text-end">
+                <h6>Invoice Date:</h6>
+                <p>{{ invoice.date }}</p>
+                
+                <h6>Due Date:</h6>
+                <p>{{ invoice.due_date }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="card-footer">
+        <a href="{% url 'add-invoice-item' invoice.pk %}" class="btn btn-sm btn-success">Add Item</a>
+        <a href="{% url 'invoice-update' invoice.pk %}" class="btn btn-sm btn-warning">Edit Invoice</a>
+    </div>
+</div>
+{% endblock %}
