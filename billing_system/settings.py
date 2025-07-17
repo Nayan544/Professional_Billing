@@ -31,6 +31,10 @@ ALLOWED_HOSTS = [
     "professional-billing.onrender.com",
 ]
 
+CSRF_TRUSTED_ORIGINS = [
+    "https://professional-billing.onrender.com",
+]
+
 AUTH_USER_MODEL = 'accounts.User'
 
 # Application definition
