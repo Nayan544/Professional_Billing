@@ -25,7 +25,11 @@ SECRET_KEY = 'django-insecure-*$_neqvv-f@f((=bx$0la3md^of7hj29#$y8#9034m=k(*0&jl
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    "127.0.0.1",
+    "localhost",
+    "professional-billing.onrender.com",
+]
 
 AUTH_USER_MODEL = 'accounts.User'
 
